@@ -1,0 +1,20 @@
+{
+
+  "manifest_version": 2,
+  "name": "Borderify",
+  "version": "1.0",
+
+  "applications": {
+    "gecko": {
+      "id": "borderify_RICK@mozilla.org"
+    }
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.reddit.com/*"],
+      "js": ["borderify.js"]
+    }
+  ]
+
+}
