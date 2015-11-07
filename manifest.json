@@ -1,0 +1,20 @@
+{
+
+  "manifest_version": 2,
+  "name": "Salty",
+  "version": "1.0",
+
+  "applications": {
+    "gecko": {
+      "id": "Salty@mozilla.org"
+    }
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.reddit.com/*"],
+      "js": ["salty.js"]
+    }
+  ]
+
+}
