@@ -1,0 +1,18 @@
+<html>
+<body id="demo">
+<input type="text" name="name" id="name">
+<button type="button" id="home" onclick="ajax()" value="checkvalue">
+<script>
+	function ajax() {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (xhttp.readyState == 4 && xhttp.status == 200) {
+				document.getElementById("demo").innerHTML = xhttp.responseText;
+			}
+		}
+		xhttp.open("GET", "other.txt", true);
+		xhttp.send();
+	}
+</script>
+</body>
+</html>

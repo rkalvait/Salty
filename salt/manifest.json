@@ -13,8 +13,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.reddit.com/*"],
-      "js": ["salty.js"]
+      "js": ["jquery-1.11.3.min.js", "salty.js"]
     }
   ]
-
 }
