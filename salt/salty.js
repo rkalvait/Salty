@@ -9,30 +9,42 @@ alert("jq");
 $(document).ready(function(){
  $("#header").html("This is Hello World by JQuery");
 });
+
 alert("endjq");
+
 comments = document.getElementsByClassName("md");
-for (var i=0; i<comments.length; i++) {
+for (var i=0; i<5; i++) {
 	comments[i].innerHTML = comments[i].innerHTML + "HERES A COMMENT";
 	var output = $.ajax({
+		crossDomain: true,
 		url: 'https://community-sentiment.p.mashape.com/', // The URL to the API. You can get this by clicking on "Show CURL example" from an API profile
 		type: 'POST', // The HTTP Method, can be GET POST PUT DELETE etc
 		data: {}, // Additional parameters here
-		dataType: 'json',
+		dataType: 'text',
 		success: function(data) {
 			//
 			//Change data.source to data.something , where something is whichever part of the object you want returned.
 			//To see the whole object you can output it to your browser console using:
 			//console.log(data);
-			comments[i].innerHTML = comments[i].innerHTML + data.source;
+			//alert(data);
+			//comments[i].innerHTML = comments[i].innerHTML + data.source;
 			alert('success');
-			//alert(data.source);
 			},
-		error: function(err) { 
-			alert('error');
-			comments[i].innerHTML = comments[i].innerHTML + "AN ERROR HAPPENED"; 
+		error: function(data) {
+			appendComment("ERROR", i);
 			},
 		beforeSend: function(xhr) {
-		xhr.setRequestHeader("X-Mashape-Authorization", "QFheDA3xy4msh6RQ2M5aXPqrHJJOp1b483ojsnlQEjzksKtFYu"); // Enter here your Mashape key
+			xhr.setRequestHeader("X-Mashape-Key", "QFheDA3xy4msh6RQ2M5aXPqrHJJOp1b483ojsnlQEjzksKtFYu"); // Enter here your Mashape key
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xhr.setRequestHeader("Accept", "application/json");
 		}
 	});
+	alert(output.getResponseHeader());
+	//comments[i].innerHTML = comments[i].innerHTML + output;
+}
+
+function appendComment(str, i) {
+	comments = document.getElementsByClassName("md");
+	comment = comments[i];
+	comment.innerHTML = comment.innerHTML + str;
 }
