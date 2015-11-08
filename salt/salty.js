@@ -14,13 +14,13 @@ alert("endjq");
 
 comments = document.getElementsByClassName("md");
 for (var i=0; i<5; i++) {
-	comments[i].innerHTML = comments[i].innerHTML + "HERES A COMMENT";
+	//comments[i].innerHTML = comments[i].innerHTML + "HERES A COMMENT";
 	var output = $.ajax({
 		crossDomain: true,
-		url: 'https://community-sentiment.p.mashape.com/', // The URL to the API. You can get this by clicking on "Show CURL example" from an API profile
+		url: 'https://community-sentiment.p.mashape.com/text/', // The URL to the API. You can get this by clicking on "Show CURL example" from an API profile
 		type: 'POST', // The HTTP Method, can be GET POST PUT DELETE etc
-		data: {}, // Additional parameters here
-		dataType: 'text',
+		data: {txt: comments[i].innerHTML}, // Additional parameters here
+		dataType: 'json',
 		success: function(data) {
 			//
 			//Change data.source to data.something , where something is whichever part of the object you want returned.
@@ -28,10 +28,13 @@ for (var i=0; i<5; i++) {
 			//console.log(data);
 			//alert(data);
 			//comments[i].innerHTML = comments[i].innerHTML + data.source;
-			alert('success');
+			//alert(data["result"]["sentiment"]);
+			appendComment(data["result"]["sentiment"], i);
 			},
-		error: function(data) {
+		error: function(err) {
+			//alert(typeof err);
 			appendComment("ERROR", i);
+			alert("error");
 			},
 		beforeSend: function(xhr) {
 			xhr.setRequestHeader("X-Mashape-Key", "QFheDA3xy4msh6RQ2M5aXPqrHJJOp1b483ojsnlQEjzksKtFYu"); // Enter here your Mashape key
@@ -39,8 +42,6 @@ for (var i=0; i<5; i++) {
 			xhr.setRequestHeader("Accept", "application/json");
 		}
 	});
-	alert(output.getResponseHeader());
-	//comments[i].innerHTML = comments[i].innerHTML + output;
 }
 
 function appendComment(str, i) {
