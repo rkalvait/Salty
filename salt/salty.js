@@ -1,38 +1,58 @@
 document.body.style.border = "5px solid red";
-//var s = document.createElement("script");
-//s.type = "text/javascript";
-//s.src = "http://code.jquery.com/jquery-1.11.3.min.js";
-//document.head.appendChild(s);
+//alert(chrome.extension.getURL("beasts/frog.jpg"));
 
-alert("jq");
+setInterval(update, 1000);
 
-$(document).ready(function(){
- $("#header").html("This is Hello World by JQuery");
-});
+// Update the Indicator below the comment.
+function update() {
+	// Find the comment
+	comments = document.getElementsByClassName("md");
+	for (var i=0; i<comments.length; i++) {
+		comment = comments[i]
+		if (comment.innerHTML.indexOf("textarea") > -1) {
+			// Get response from the API
+			getResponse(comment);
+		}
+	}
+}
 
-alert("endjq");
-
-comments = document.getElementsByClassName("md");
-for (var i=0; i<5; i++) {
-	//comments[i].innerHTML = comments[i].innerHTML + "HERES A COMMENT";
+// Get a response from the API, place it within the comment div element
+function getResponse(comment) {
+	// Connect to the API
 	var output = $.ajax({
 		crossDomain: true,
 		url: 'https://community-sentiment.p.mashape.com/text/', // The URL to the API. You can get this by clicking on "Show CURL example" from an API profile
 		type: 'POST', // The HTTP Method, can be GET POST PUT DELETE etc
-		data: {txt: comments[i].innerHTML}, // Additional parameters here
+		data: {txt: comment.childNodes[0].value}, // Additional parameters here
 		dataType: 'json',
 		success: function(data) {
-			//
-			//Change data.source to data.something , where something is whichever part of the object you want returned.
-			//To see the whole object you can output it to your browser console using:
-			//console.log(data);
-			//alert(data);
-			//comments[i].innerHTML = comments[i].innerHTML + data.source;
-			//alert(data["result"]["sentiment"]);
-			appendComment(data["result"]["sentiment"], i);
+			//alert(data["result"]["confidence"]);
+			// Successful post, apply the response
+			if (comment.childNodes[1] == undefined) {
+				var p = document.createElement("p");
+				p.innerHTML = getSalt(data);
+				comment.appendChild(p);
+				
+				var img = document.createElement("img");
+				alert(chrome.extension.getURL("beasts/frog.jpg"));
+				//img.setAttribute("src", chrome.extension.getURL("beasts/frog.jpg"));
+				img.setAttribute("src", "http://orig14.deviantart.net/f231/f/2015/030/6/c/salt_shaker_pixel_by_alfvie-d8g1phq.png");
+				img.setAttribute("style", "width: 100px");
+				img.setAttribute("style", "height: 100px");
+				comment.appendChild(img);
+			} else {
+				comment.childNodes[1].innerHTML = getSalt(data);
+				//comment.removeChild(comment.childNodes[2]);
+				var img = document.createElement("img");
+				//img.setAttribute("src", chrome.extension.getURL("beasts/frog.jpg"));
+				comment.childNodes[2].setAttribute("src", "http://orig14.deviantart.net/f231/f/2015/030/6/c/salt_shaker_pixel_by_alfvie-d8g1phq.png");
+				//img.setAttribute("src", "http://orig14.deviantart.net/f231/f/2015/030/6/c/salt_shaker_pixel_by_alfvie-d8g1phq.png");
+				//img.setAttribute("style", "width: 100vw");
+				//img.setAttribute("style", "height: 100vh");
+				//comment.appendChild(img);
+			}
 			},
 		error: function(err) {
-			//alert(typeof err);
 			appendComment("ERROR", i);
 			alert("error");
 			},
@@ -44,8 +64,15 @@ for (var i=0; i<5; i++) {
 	});
 }
 
-function appendComment(str, i) {
-	comments = document.getElementsByClassName("md");
-	comment = comments[i];
-	comment.innerHTML = comment.innerHTML + str;
+function getSalt(data) {
+	if (data["result"]["sentiment"] == "Neutral") {
+		return "Neutral";
+	} 
+	var out = data["result"]["sentiment"];
+	var conf = parseFloat(data["result"]["confidence"]);
+	if (conf > 75) {
+		out = "Very " + out;
+	}
+	
+	return out;
 }

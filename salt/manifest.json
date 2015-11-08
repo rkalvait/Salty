@@ -1,6 +1,10 @@
 {
 
   "manifest_version": 2,
+  "default_icon": {
+	"48": "salt48.jpg",
+    "128": "salt128.jpg"
+  },
   "name": "Salty",
   "version": "1.0",
 
@@ -15,5 +19,22 @@
       "matches": ["*://*.reddit.com/*"],
       "js": ["jquery-1.11.3.min.js", "salty.js"]
     }
+  ],
+
+  "permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],  
+
+  "browser_action": {
+    "default_icon": "button/beasts.png",
+    "default_title": "Beastify",
+    "default_popup": "popup/choose_beast.html"
+  },
+  
+  "web_accessible_resources": [
+    "./beasts/frog.jpg",
+    "./beasts/turtle.jpg",
+    "./beasts/snake.jpg"
   ]
 }
