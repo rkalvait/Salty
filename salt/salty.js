@@ -1,5 +1,5 @@
-document.body.style.border = "5px solid red";
-//alert(chrome.extension.getURL("beasts/frog.jpg"));
+// Add a salt meter below a comment box that updates as the user types
+// It shows how negative that user's comment is.
 
 setInterval(update, 1000);
 
@@ -26,36 +26,48 @@ function getResponse(comment) {
 		data: {txt: comment.childNodes[0].value}, // Additional parameters here
 		dataType: 'json',
 		success: function(data) {
-			//alert(data["result"]["confidence"]);
 			// Successful post, apply the response
+			
+			// First time adding the salt meter
 			if (comment.childNodes[1] == undefined) {
 				var p = document.createElement("p");
-				p.innerHTML = getSalt(data);
+				var salty = getSalt(data);
+				var img = "<img src='http://orig14.deviantart.net/f231/f/2015/030/6/c/salt_shaker_pixel_by_alfvie-d8g1phq.png' width=10 height=10></img>";
+				if (salty == "Very Negative") {
+					p.innerHTML = salty+": "+img+img+img+img+img;
+				} else if (salty == "Negative") {
+					p.innerHTML = salty+": "+img+img+img+img;
+				} else if (salty == "Neutral") {
+					p.innerHTML = salty+": "+img+img+img;
+				} else if (salty == "Positive") {
+					p.innerHTML = salty+": "+img+img;
+				} else if (salty == "Very Positive") {
+					p.innerHTML = salty+": "+img;
+				}
 				comment.appendChild(p);
-				
-				var img = document.createElement("img");
-				alert(chrome.extension.getURL("beasts/frog.jpg"));
-				//img.setAttribute("src", chrome.extension.getURL("beasts/frog.jpg"));
-				img.setAttribute("src", "http://orig14.deviantart.net/f231/f/2015/030/6/c/salt_shaker_pixel_by_alfvie-d8g1phq.png");
-				img.setAttribute("style", "width: 100px");
-				img.setAttribute("style", "height: 100px");
-				comment.appendChild(img);
+			// All other updates
 			} else {
-				comment.childNodes[1].innerHTML = getSalt(data);
-				//comment.removeChild(comment.childNodes[2]);
-				var img = document.createElement("img");
-				//img.setAttribute("src", chrome.extension.getURL("beasts/frog.jpg"));
-				comment.childNodes[2].setAttribute("src", "http://orig14.deviantart.net/f231/f/2015/030/6/c/salt_shaker_pixel_by_alfvie-d8g1phq.png");
-				//img.setAttribute("src", "http://orig14.deviantart.net/f231/f/2015/030/6/c/salt_shaker_pixel_by_alfvie-d8g1phq.png");
-				//img.setAttribute("style", "width: 100vw");
-				//img.setAttribute("style", "height: 100vh");
-				//comment.appendChild(img);
+				var salty = getSalt(data);
+				var img = "<img src='http://orig14.deviantart.net/f231/f/2015/030/6/c/salt_shaker_pixel_by_alfvie-d8g1phq.png' width=10 height=10></img>";
+				if (salty == "Very Negative") {
+					comment.childNodes[1].innerHTML = salty+": "+img+img+img+img+img;
+				} else if (salty == "Negative") {
+					comment.childNodes[1].innerHTML = salty+": "+img+img+img+img;
+				} else if (salty == "Neutral") {
+					comment.childNodes[1].innerHTML = salty+": "+img+img+img;
+				} else if (salty == "Positive") {
+					comment.childNodes[1].innerHTML = salty+": "+img+img;
+				} else if (salty == "Very Positive") {
+					comment.childNodes[1].innerHTML = salty+": "+img;
+				}
 			}
 			},
+		// Something went wrong
 		error: function(err) {
 			appendComment("ERROR", i);
 			alert("error");
 			},
+		// Apply headers before sending
 		beforeSend: function(xhr) {
 			xhr.setRequestHeader("X-Mashape-Key", "QFheDA3xy4msh6RQ2M5aXPqrHJJOp1b483ojsnlQEjzksKtFYu"); // Enter here your Mashape key
 			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -64,6 +76,7 @@ function getResponse(comment) {
 	});
 }
 
+// Get a string that ranges from "Very Negative" to "Very Positive"
 function getSalt(data) {
 	if (data["result"]["sentiment"] == "Neutral") {
 		return "Neutral";
